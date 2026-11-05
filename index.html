@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AIMetaScrub: AI Metadata Remover & Viewer (Free, No Upload)</title>
+<meta name="description" content="Free AI metadata remover and viewer. See C2PA, EXIF, XMP, IPTC and AI prompt data in your images, then remove it. Runs in your browser, no upload, no signup.">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232563eb'/%3E%3Cpath d='M9 16l5 5 9-10' stroke='white' stroke-width='3' fill='none'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap">
+<style>
+:root{--ink:#0b1b3a;--b:#2563eb;--bd:#1d4ed8;--sky:#eaf2ff;--ln:#d6e2f5;--mu:#5b6b86}
+*{box-sizing:border-box;margin:0}
+body{font:16px/1.65 'Plus Jakarta Sans',system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink);background:#fff}
+a{color:inherit;text-decoration:none}:focus-visible{outline:3px solid #60a5fa;outline-offset:2px}
+.w{max-width:1000px;margin:auto;padding:0 20px}
+nav{border-bottom:1px solid var(--ln)}nav .w{display:flex;justify-content:space-between;align-items:center;height:62px}
+.logo{display:flex;gap:10px;align-items:center;font-weight:800;font-size:19px}
+.logo i{width:30px;height:30px;border-radius:9px;background:var(--b);display:grid;place-items:center;color:#fff;font-style:normal}
+nav a.l{margin-left:22px;color:var(--mu);font-weight:500;font-size:15px}nav a.l:hover{color:var(--b)}
+.hero{background:linear-gradient(180deg,#fff,var(--sky));padding:56px 0 130px;text-align:center}
+h1{font-size:clamp(32px,5.4vw,54px);line-height:1.1;letter-spacing:-.03em;font-weight:800;max-width:760px;margin:auto}
+.hero p{max-width:600px;margin:16px auto 0;color:var(--mu);font-size:18px}
+.chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+.chips span{border:1px solid var(--ln);background:#fff;padding:4px 14px;border-radius:99px;font-size:14px;color:var(--bd);font-weight:500}
+.in>*{animation:up .7s both}.in>:nth-child(2){animation-delay:.12s}.in>:nth-child(3){animation-delay:.24s}
+@keyframes up{from{opacity:0;transform:translateY(16px)}}
+main{margin-top:-96px;position:relative}
+.box{background:#fff;border-radius:20px;box-shadow:0 18px 50px #1d4ed824;padding:24px;border:1px solid var(--ln)}
+.drop{border:2px dashed #93b8f5;border-radius:14px;padding:40px 16px;text-align:center;cursor:pointer;transition:background .2s,border-color .2s;background:#f7faff}
+.drop:hover,.drop.on{background:var(--sky);border-color:var(--b)}
+.drop h3{font-size:22px}.drop small{color:var(--mu)}
+.btn{display:inline-block;border:0;border-radius:10px;padding:11px 22px;font-weight:700;font-size:15px;font-family:inherit;color:#fff;background:var(--b);cursor:pointer;transition:background .2s}
+.btn:hover{background:var(--bd)}.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.o{background:#fff;color:var(--b);border:1.5px solid #bcd3f8}.btn.o:hover{background:var(--sky)}
+.bar{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:18px 0 4px}
+.bar label{color:var(--mu);font-size:14px;display:flex;gap:8px;align-items:center}
+.note{font-size:13px;color:var(--mu);margin-top:8px}
+.f{border:1px solid var(--ln);border-radius:14px;margin-top:12px;overflow:hidden}
+.fh{display:flex;gap:12px;align-items:center;padding:12px 14px;flex-wrap:wrap}
+.th{width:56px;height:56px;border-radius:10px;overflow:hidden;position:relative;background:var(--sky);flex:none}.th img{width:100%;height:100%;object-fit:cover}
+.busy .th:after{content:"";position:absolute;left:0;right:0;height:3px;background:#38bdf8;box-shadow:0 0 12px #38bdf8;animation:sc .9s linear infinite}
+@keyframes sc{from{top:0}to{top:100%}}
+.fi{flex:1;min-width:150px}.fi b{display:block;word-break:break-all;font-size:15px}.fi small{color:var(--mu)}
+.tag{font-size:12px;padding:2px 9px;border-radius:99px;background:#dbeafe;color:var(--bd);margin-left:6px;font-weight:600}.tag.g{background:#dcfce7;color:#15803d}.tag.a{background:#fef3c7;color:#b45309}
+.fh .btn{padding:8px 14px;font-size:14px}
+.pn{display:none;padding:16px;background:#f8fbff;border-top:1px solid var(--ln)}.pn.open{display:block;animation:up .35s both}
+.sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:12px}
+.sum div{background:#fff;border:1px solid var(--ln);border-radius:12px;padding:10px 14px}.sum b{display:block;font-size:26px;color:var(--bd);line-height:1.2}.sum span{font-size:13px;color:var(--mu)}
+.sum .bad b{color:#d97706}
+details{background:#fff;border:1px solid var(--ln);border-radius:12px;margin-top:8px}
+summary{padding:11px 14px;cursor:pointer;font-weight:700;list-style:none;display:flex;justify-content:space-between;align-items:center}
+summary:after{content:"+";color:var(--b);font-size:20px}details[open]>summary:after{content:"\2212"}
+.r{display:grid;grid-template-columns:150px 1fr;gap:2px 14px;padding:9px 14px;border-top:1px solid #eef3fb;font-size:14px}
+.r b{color:var(--mu);font-weight:600}.r span{word-break:break-word}.r small{grid-column:2;color:#8a9ab5}.r.hot span{color:#b45309;font-weight:700}
+.cmp{background:var(--sky);border:1px solid #bcd3f8;border-radius:12px;padding:14px;margin-bottom:12px;animation:up .45s both}
+.cmp h4{color:var(--bd);margin-bottom:8px}.cmp .row{display:flex;justify-content:space-between;font-size:14px;padding:3px 0;gap:10px}.ok{color:#15803d;font-weight:700}
+section.s{padding:68px 0}h2{font-size:30px;letter-spacing:-.02em;margin-bottom:26px}
+.flow{display:grid;grid-template-columns:repeat(4,1fr);list-style:none;padding:0}
+.flow li{position:relative;text-align:center;padding:0 14px}
+.flow li:not(:last-child):after{content:"";position:absolute;top:28px;left:calc(50% + 38px);right:calc(-50% + 38px);height:3px;border-radius:2px;background:repeating-linear-gradient(90deg,#9dbcf2 0 8px,transparent 8px 14px)}
+.nd{width:58px;height:58px;border-radius:50%;margin:0 auto 14px;display:grid;place-items:center;background:#fff;border:2px solid var(--b);color:var(--b);position:relative;animation:act 10s infinite;animation-delay:calc(var(--i)*2.5s - 10s)}
+.nd svg{width:26px;height:26px}
+.nd i{position:absolute;top:-6px;right:-6px;width:21px;height:21px;border-radius:50%;background:var(--ink);color:#fff;font-size:12px;font-weight:700;line-height:21px;text-align:center;font-style:normal}
+@keyframes act{0%,22%{background:var(--b);color:#fff;box-shadow:0 0 0 9px #2563eb26}28%,100%{background:#fff;color:var(--b);box-shadow:none}}
+.flow b{display:block}.flow .ds{display:block;color:var(--mu);font-size:14px}
+.cps{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:10px}
+.cp{font-size:12px;font-weight:700;border:1px solid #bcd3f8;color:var(--bd);background:#fff;border-radius:6px;padding:1px 8px}
+.cp.x{color:#8a9ab5;border-color:var(--ln);text-decoration:line-through}
+@media(max-width:640px){.flow{grid-template-columns:1fr;gap:28px}.flow li{text-align:left;padding:0 0 0 78px;min-height:58px}.nd{position:absolute;left:0;top:0;margin:0}.flow li:not(:last-child):after{top:64px;left:28px;right:auto;width:3px;height:calc(100% - 30px);background:repeating-linear-gradient(180deg,#9dbcf2 0 8px,transparent 8px 14px)}.cps{justify-content:flex-start}}
+.ft{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:44px 36px}
+.ft div{text-align:center}.ft svg{width:36px;height:36px;color:var(--b);margin-bottom:10px}
+.ft b{display:block;color:var(--bd);font-size:18px;margin-bottom:4px}.ft p{color:var(--mu);font-size:15px;max-width:320px;margin:auto}
+.alt{background:var(--sky)}
+.faq{max-width:760px}.faq p{padding:0 14px 14px;color:var(--mu);font-size:15px}
+footer{background:var(--ink);color:#b8c8e6;text-align:center;padding:26px 20px;font-size:14px}
+[hidden]{display:none!important}
+.opts,.acts{display:flex;gap:10px 18px;flex-wrap:wrap;align-items:center}
+.lk{background:none;border:0;color:var(--b);font:inherit;font-weight:700;cursor:pointer;text-decoration:underline;padding:0}
+.xr{position:relative;width:min(460px,92%);height:200px;margin:34px auto 0}
+.xi{position:absolute;inset:16px 120px;border-radius:14px;background:linear-gradient(135deg,#7db4ff,#1d4ed8);overflow:hidden;box-shadow:0 14px 30px #1d4ed833}
+.xi:after{content:"";position:absolute;left:0;right:0;height:3px;background:#fff;box-shadow:0 0 14px #fff;animation:sc 2.4s ease-in-out infinite alternate}
+.xc{position:absolute;background:#fff;border:1px solid #bcd3f8;color:var(--bd);font-size:12px;font-weight:700;padding:3px 10px;border-radius:8px;white-space:nowrap;box-shadow:0 6px 16px #1d4ed81f;animation:xc 7s infinite both}
+.c1{top:0;left:0}.c2{top:40px;right:0;animation-delay:.5s}.c3{bottom:40px;left:0;animation-delay:1s}.c4{bottom:0;right:0;animation-delay:1.5s}
+.xi svg{width:100%;height:100%;display:block}.xi .ai{position:absolute;top:8px;left:8px;z-index:1;background:#fff;color:var(--bd);font-size:11px;font-weight:800;padding:1px 9px;border-radius:99px}
+@keyframes xc{0%{opacity:0;transform:scale(.85)}10%,52%{opacity:1;transform:none;text-decoration:none}58%{opacity:.6;text-decoration:line-through}72%,100%{opacity:0;transform:translateY(-8px);text-decoration:line-through}}
+@property --p{syntax:'<number>';inherits:false;initial-value:0}
+.pr{display:flex;align-items:center;gap:10px}
+.ring{--p:0;width:58px;height:58px;border-radius:50%;flex:none;background:conic-gradient(var(--b) calc(var(--p)*1%),#dfe9fb 0);display:grid;place-items:center;animation:rg 1.1s ease-out both}
+.ring b{background:#fff;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:17px;color:var(--bd)}
+@keyframes rg{from{--p:0}}
+.rk{font-style:normal;font-size:11px;font-weight:700;padding:1px 7px;border-radius:99px;margin-left:6px;vertical-align:1px}
+.rk.h{background:#fee2e2;color:#b91c1c}.rk.m{background:#fef3c7;color:#b45309}.rk.l{background:#e0edff;color:var(--bd)}
+.tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:26px}
+.tabs button{display:flex;align-items:center;gap:8px;border:1.5px solid var(--ln);background:#fff;color:var(--mu);font:inherit;font-weight:700;font-size:15px;padding:9px 18px;border-radius:12px;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.tabs button:hover{color:var(--b);border-color:#9dbcf2}.tabs .on{background:var(--b);color:#fff;border-color:var(--b)}.tabs svg{width:18px;height:18px}
+.m-view .bar{display:none}.m-edit .opts,.m-edit #all{display:none}
+.edf{margin-top:16px;border:1px solid var(--ln);border-radius:14px;padding:16px;background:#f8fbff}
+.eg{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:14px}
+.eg label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600;color:var(--mu)}
+.eg input{font:inherit;font-weight:400;padding:9px 11px;border:1.5px solid var(--ln);border-radius:9px;color:var(--ink)}.eg input:focus{border-color:var(--b);outline:none}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(max-width:560px){.r{grid-template-columns:1fr}.r small{grid-column:1}}
+</style></head><body>
+<nav><div class="w"><a class="logo" href="#"><i>&#10003;</i>AIMetaScrub</a><div><a class="l" href="#how">How it works</a><a class="l" href="#features">Features</a><a class="l" href="#faq">FAQ</a></div></div></nav>
+<header class="hero"><div class="w in"><div class="tabs" role="group" aria-label="Tools"><button data-m="remove" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6m4-6v6M6 7l1 12a1 1 0 001 1h8a1 1 0 001-1l1-12M9 7V4h6v3"/></svg>Remove Metadata</button><button data-m="view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>View Metadata</button><button data-m="edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg>Edit Metadata</button></div><h1 id="h1">AI Metadata Remover &amp; Viewer</h1><p id="hp">See exactly what hidden data your images carry: C2PA credentials, EXIF, XMP, IPTC and AI prompts. Then remove it in one click.</p><div class="chips"><span>Runs in your browser</span><span>No upload</span><span>No signup</span><span>Free</span></div><div class="xr" aria-hidden="true"><div class="xi"><svg viewBox="0 0 220 168" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Sample AI-generated cabin at sunset"><defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1e3a8a"/><stop offset=".55" stop-color="#5b8def"/><stop offset="1" stop-color="#fcd9a4"/></linearGradient><linearGradient id="lk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6aa0f0"/><stop offset="1" stop-color="#1d4ed8"/></linearGradient></defs><rect width="220" height="168" fill="url(#sk)"/><circle cx="150" cy="82" r="22" fill="#fff3d1"/><g fill="#fff" opacity=".8"><circle cx="30" cy="18" r="1"/><circle cx="70" cy="30" r="1.2"/><circle cx="120" cy="12" r="1"/><circle cx="188" cy="26" r="1"/></g><path d="M0 108l40-36 34 28 38-44 46 52 62-30v90H0z" fill="#1b2f6b"/><path d="M0 128l50-26 44 20 46-30 80 36v40H0z" fill="#0f1f4d"/><rect y="132" width="220" height="36" fill="url(#lk)"/><path d="M120 138h60M128 146h44M136 154h30" stroke="#fff3d1" stroke-opacity=".5" stroke-width="2" stroke-linecap="round"/><g fill="#0a1636"><path d="M20 130l9-30 9 30zM34 130l7-22 7 22zM180 130l8-26 8 26z"/><path d="M60 122l24-18 24 18z"/><rect x="66" y="122" width="36" height="12"/></g><rect x="76" y="125" width="8" height="8" fill="#fcd34d"/></svg><span class="ai">AI generated</span></div><span class="xc c1">GPS · 48.85, 2.35</span><span class="xc c2">Camera · AcmeCam Z9</span><span class="xc c3">C2PA · AI generated</span><span class="xc c4">Prompt · “cozy cabin…”</span></div></div></header>
+<main><div class="w"><div class="box">
+<div id="drop" class="drop" tabindex="0" role="button" aria-label="Choose images"><h3>Drag &amp; drop or click to upload</h3><small>Up to 5 images &middot; JPG, PNG, WebP</small><br><br><span class="btn">Choose images</span></div>
+<input id="inp" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden>
+<p class="note">No image handy? <button class="lk" id="smp">Scan a sample image</button></p>
+<p id="msg" class="note" role="status"></p>
+<div class="bar"><div class="opts"><label><input type="checkbox" id="kp" checked> Keep color profile</label><label><input type="checkbox" id="ko" checked> Keep photo orientation (JPG)</label></div><div class="acts"><button id="zip" class="btn o" hidden>Download all (ZIP)</button><button id="all" class="btn" disabled>Remove all metadata</button></div></div>
+<div id="edf" class="edf" hidden><div class="eg"><label>Description<input id="e-desc"></label><label>Author<input id="e-auth"></label><label>Copyright<input id="e-copy" placeholder="© 2026 Your Name"></label><label>Latitude<input id="e-lat" inputmode="decimal" placeholder="48.8566"></label><label>Longitude<input id="e-lon" inputmode="decimal" placeholder="2.3522"></label></div><button id="apply" class="btn">Apply edits to all images</button><p class="note">Editing replaces the image’s existing metadata with only the fields you enter. Orientation is kept. JPG and PNG only.</p></div>
+<div id="list"></div></div></div></main>
+
+<section class="s" id="how"><div class="w"><h2>How it works</h2><ol class="flow">
+<li style="--i:0"><span class="nd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0l-4 4m4-4l4 4M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg><i>1</i></span><b>Upload your image</b><span class="ds">Files stay on your device. Nothing is sent to a server.</span></li>
+<li style="--i:1"><span class="nd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><i>2</i></span><b>Inspect the metadata</b><span class="ds">See every field, grouped by type, with plain-language notes.</span><span class="cps"><span class="cp">C2PA</span><span class="cp">EXIF</span><span class="cp">XMP</span><span class="cp">IPTC</span></span></li>
+<li style="--i:2"><span class="nd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6m4-6v6M6 7l1 12a1 1 0 001 1h8a1 1 0 001-1l1-12M9 7V4h6v3"/></svg><i>3</i></span><b>Remove it</b><span class="ds">Metadata is cut from the file. Pixels are never re-compressed.</span><span class="cps"><span class="cp x">C2PA</span><span class="cp x">EXIF</span><span class="cp x">XMP</span><span class="cp x">IPTC</span></span></li>
+<li style="--i:3"><span class="nd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12m0 0l-4-4m4 4l4-4M4 18v1a1 1 0 001 1h14a1 1 0 001-1v-1"/></svg><i>4</i></span><b>Check and download</b><span class="ds">Compare before and after, then save the clean copy.</span></li></ol></div></section>
+
+<section class="s alt" id="features"><div class="w"><h2 style="text-align:center">Features</h2><div class="ft">
+<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg><b>Remove C2PA credentials</b><p>Reads and removes C2PA content credentials added by cameras, editing apps and AI generators. You see what the record says before it is gone.</p></div>
+<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.2"/></svg><b>Delete EXIF, IPTC &amp; XMP data</b><p>GPS coordinates, camera and serial numbers, timestamps and device details are removed together with any embedded AI markers.</p></div>
+<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="1.6"/><path d="M21 16l-5-5-9 9"/></svg><b>Clean without changing pixels</b><p>Metadata is cut from the file headers. We never re-encode or resize the image, so your photo looks exactly the same.</p></div>
+<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><b>Understand false AI labels</b><p>Real photos edited in Lightroom or Photoshop can carry AI tags. The inspector shows exactly which fields your file contains.</p></div>
+<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg><b>Clean up to 5 images at once</b><p>Drop up to 5 images together and clean them all in one click.</p></div>
+<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><b>Inspect every tag first</b><p>Review every EXIF, IPTC, XMP and C2PA field with plain-language notes, then re-scan the cleaned file to confirm the data is gone.</p></div>
+<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg><b>Works with common formats</b><p>Clean JPG, PNG and WebP images. HEIC and TIFF are not supported yet.</p></div>
+<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg><b>Private by design</b><p>Your images never leave your device. Everything is processed in your browser, so nothing is uploaded or stored.</p></div>
+<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg><b>Free, no account needed</b><p>No sign-up, no subscription and no watermark. Upload your image, clean it and download it.</p></div>
+</div></div></section>
+
+<section class="s" id="faq"><div class="w"><h2>Frequently asked questions</h2><div class="faq">
+<details><summary>Does this remove all metadata, including AI-specific tags?</summary><p>Yes, for the formats we support. AIMetaScrub removes EXIF, XMP, IPTC, C2PA content credentials and PNG text chunks, including prompts saved by tools like Stable Diffusion and ComfyUI. The image pixels are not touched. The color profile is kept by default so colors look the same.</p></details>
+<details><summary>Can it remove invisible or visual AI watermarks?</summary><p>No. It cleans metadata only. Some tools, such as Google’s SynthID, embed a signal in the pixels, and that survives metadata cleaning. Visible logos or marks are part of the picture, so they stay too.</p></details>
+<details><summary>Do you store my images? How long are files kept?</summary><p>No. Nothing is uploaded. Your image is read and cleaned inside your browser tab, held only in memory, and gone when you close or refresh the page. We never see your files.</p></details>
+<details><summary>What formats and limits are supported?</summary><p>JPG/JPEG, PNG and WebP, up to 5 images at a time. Because everything runs on your device there is no upload limit, but very large files depend on your device’s memory. HEIC and TIFF are not supported yet.</p></details>
+<details><summary>Will removing the metadata remove the AI label on Instagram?</summary><p>Not necessarily. Platforms read signals in the file, such as C2PA records, the IPTC digital source type and software names in XMP or EXIF, and AIMetaScrub removes those. But metadata is not the only signal. Invisible watermarks like SynthID stay in the pixels, platforms may also rely on creator disclosure, and a post that is already live keeps its label until you replace it. If your image is realistically AI-generated, follow the platform’s rules on labeling it.</p></details>
+<details><summary>Does cleaning change the picture or its quality?</summary><p>No. We don’t re-encode or resize the image. The picture data is copied byte for byte and only the metadata blocks are cut out, so the file just gets smaller by the amount of metadata it carried.</p></details>
+<details><summary>Does it work on images from ChatGPT, DALL·E, Firefly or Gemini?</summary><p>It removes the metadata those tools write into JPG, PNG and WebP files, including C2PA records and XMP/IPTC fields. Open the metadata view first to see exactly what your file contains. Gemini and Imagen images also carry SynthID in the pixels, which no metadata tool can remove.</p></details>
+<details><summary>Can I clean HEIC photos from my iPhone?</summary><p>Not yet. On iPhone you can go to Settings, then Camera, then Formats, and choose Most Compatible. New photos are then saved as JPEG, and you can clean those here.</p></details>
+<details><summary>Why did Instagram put an AI label on my real photo?</summary><p>Platforms often rely on tags stored in the file rather than the picture itself. Editors such as Lightroom and Photoshop write an AI tag when you use features like Generative Fill, and some phone gallery apps and online editors do too. The tag is usually a C2PA record or the IPTC digital source type. Open the metadata view to see which of these your file carries.</p></details>
+<details><summary>Does the tool scan my caption or prompt text for AI words?</summary><p>No. It only reads data stored inside the image file and never sees captions you type on social platforms. It looks for known generator names, such as Midjourney or ChatGPT, in the file’s metadata fields, and for prompts that tools like Stable Diffusion or ComfyUI save in PNG files. That can include description or keyword fields stored in the file itself.</p></details>
+</div></div></section>
+<footer>AIMetaScrub &middot; Your files never leave your device.</footer>
+
+<script>
+const $=s=>document.querySelector(s),td=new TextDecoder('latin1'),u8=new TextDecoder(),
+kb=n=>n>1048576?(n/1048576).toFixed(2)+' MB':(n/1024).toFixed(1)+' KB',
+esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])),
+AI=/midjourney|dall[-· ]?e|stable ?diffusion|comfyui|firefly|chatgpt|openai|gemini|imagen|trainedAlgorithmicMedia|leonardo|invokeai|automatic1111|flux|claude|anthropic|sora/i,
+H={'Generator':'The app or service that wrote this record.','Software agent':'The tool that made or edited the content.','Action':'What was done: c2pa.created means made, c2pa.edited means changed.','Description':'A note attached by the creator.','Source type':'How it was produced. trainedAlgorithmicMedia means AI-generated.','Signature':'Cryptographic proof of origin. Checking it needs a C2PA validator.','GPS location':'Where the photo was taken. Privacy sensitive.','Body serial number':'Identifies the exact camera. Privacy sensitive.','AI prompt/settings':'The prompt or workflow used to generate the image.','Orientation':'How the photo should be rotated when displayed.'},
+HOT=new Set(['GPS location','Body serial number','Artist','AI prompt/settings']),
+SN={C2PA:'Content Credentials (C2PA)',EXIF:'EXIF (camera & location)',XMP:'XMP',IPTC:'IPTC',Text:'Text chunks & AI prompts'};
+const kind=b=>b[0]==255&&b[1]==216?'jpeg':b[0]==137&&b[1]==80?'png':b[0]==82&&b[8]==87&&b[9]==69?'webp':null;
+
+function exif(b){const L=b[0]==73,dv=new DataView(b.buffer,b.byteOffset,b.length),g16=o=>dv.getUint16(o,L),g32=o=>dv.getUint32(o,L),
+N={0x10F:'Camera make',0x110:'Camera model',0x112:'Orientation',0x131:'Software',0x132:'Modified date',0x13B:'Artist',0x8298:'Copyright',0x9003:'Date taken',0xA434:'Lens model',0x10E:'Description',0xA431:'Body serial number'},out=[],gps={};
+const ifd=(o,gm)=>{if(o+2>b.length)return;const n=g16(o);for(let i=0;i<n;i++){const e=o+2+i*12;if(e+12>b.length)break;const t=g16(e+2),c=g32(e+4),sz=([0,1,1,2,4,8][t]*c)||0,p=sz>4?g32(e+8):e+8,tag=g16(e);let v;
+if(p+sz>b.length)continue;
+if(t==2)v=u8.decode(b.subarray(p,p+c)).replace(/\0.*$/,'');else if(t==3)v=g16(p);else if(t==4)v=g32(p);else if(t==5){v=[];for(let k=0;k<c&&k<3;k++)v.push(g32(p+8*k)/(g32(p+8*k+4)||1))}
+if(tag==0x8769||tag==0x8825)ifd(v,tag==0x8825);else if(gm)gps[tag]=v;else if(N[tag]&&v!==undefined&&v!=='')out.push([N[tag],v])}};
+try{ifd(g32(4))}catch(e){}
+if(gps[2]&&gps[4]){const d=a=>a[0]+a[1]/60+a[2]/3600;out.push(['GPS location',((gps[1]=='S'?-1:1)*d(gps[2])).toFixed(5)+', '+((gps[3]=='W'?-1:1)*d(gps[4])).toFixed(5)])}
+return out}
+
+function toks(b){const t=[];for(let i=0;i<b.length;i++){const h=b[i];let l,s=i+1;if(h>=96&&h<=119)l=h-96;else if(h==120){l=b[i+1];s=i+2}else continue;if(l<3||s+l>b.length)continue;const x=b.subarray(s,s+l);if(x.every(c=>c>=32&&c<127)){t.push(td.decode(x));i=s+l-1}}return t}
+function c2pa(b){const t=toks(b),v=k=>{const i=t.indexOf(k);if(i<0)return;let x=t[i+1];if(x=='name')x=t[i+2];return x},src=t.find(x=>/digitalsourcetype\//i.test(x));
+const r=[['Generator',v('claim_generator_info')||v('claim_generator')],['Software agent',v('softwareAgent')||v('software_agent')],['Action',v('action')],['Description',v('description')],['Source type',src&&src.split('/').pop()]].filter(x=>x[1]);
+r.push(['Signature','Embedded (not verified in this browser)']);return r}
+
+function inspect(b){const k=kind(b),S={C2PA:[],EXIF:[],XMP:[],IPTC:[],Text:[]},ai=[],jb=[];let ex=null;
+const add=(s,l,v)=>{v=String(v).slice(0,300);S[s].push([l,v]);if(AI.test(v))ai.push(l+': '+v.slice(0,40))},
+xm=t=>{const r=/(?:xmp|photoshop|dc|tiff|exif|xmpMM|Iptc4xmpExt):(\w+)(?:="([^"]{1,200})"|>([^<>]{1,200})<)/g;let m,n=0;while((m=r.exec(t))&&n<25){add('XMP',m[1],m[2]||m[3]);n++}},
+ip=d=>{const N={5:'Title',25:'Keywords',80:'Byline',90:'City',101:'Country',116:'Copyright',120:'Caption'};for(let i=0;i<d.length-5;i++)if(d[i]==28&&d[i+1]==2&&N[d[i+2]]){const l=d[i+3]<<8|d[i+4];add('IPTC',N[d[i+2]],u8.decode(d.subarray(i+5,i+5+l)));i+=4+l}};
+try{
+if(k=='png'){let o=8;while(o<b.length-8){const l=new DataView(b.buffer,b.byteOffset+o).getUint32(0),t=td.decode(b.subarray(o+4,o+8)),d=b.subarray(o+8,o+8+l);
+if(t=='tEXt'||t=='iTXt'){const z=d.indexOf(0),key=td.decode(d.subarray(0,z));let tx;if(t=='tEXt')tx=td.decode(d.subarray(z+1));else{let p=d.indexOf(0,z+3)+1;p=d.indexOf(0,p)+1;tx=u8.decode(d.subarray(p))}
+if(/^(parameters|prompt|workflow|invokeai_metadata|sd-metadata)$/i.test(key)){ai.push('AI prompt ('+key+')');S.Text.push(['AI prompt/settings',key+': '+tx.slice(0,300)])}else add('Text',key,tx)}
+else if(t=='zTXt')S.Text.push([td.decode(d.subarray(0,d.indexOf(0))),'(compressed text)']);else if(t=='eXIf')ex=d;else if(t=='caBX')jb.push(d);o+=12+l}}
+else if(k=='jpeg'){let o=2;while(o<b.length-4&&b[o]==255){const m=b[o+1];if(m==218)break;const l=b[o+2]<<8|b[o+3],d=b.subarray(o+4,o+2+l);
+if(m==225){const h=td.decode(d.subarray(0,29));if(h.startsWith('Exif'))ex=d.subarray(6);else if(h.startsWith('http://ns.adobe'))xm(u8.decode(d.subarray(29)))}
+else if(m==235)jb.push(d);else if(m==237)ip(d);else if(m==254)add('Text','Comment',td.decode(d));o+=2+l}}
+else if(k=='webp'){let o=12;while(o<b.length-8){const t=td.decode(b.subarray(o,o+4)),l=new DataView(b.buffer,b.byteOffset+o+4).getUint32(0,true),d=b.subarray(o+8,o+8+l);
+if(t=='EXIF')ex=d[0]==69?d.subarray(6):d;else if(t=='XMP ')xm(u8.decode(d));else if(t=='C2PA')jb.push(d);o+=8+l+(l&1)}}
+if(ex)exif(ex).forEach(([l,v])=>add('EXIF',l,v));
+if(jb.length){const c=new Uint8Array(jb.reduce((a,x)=>a+x.length,0));let p=0;jb.forEach(x=>{c.set(x,p);p+=x.length});c2pa(c).forEach(([l,v])=>add('C2PA',l,v))}
+}catch(e){}
+return{k,S,ai:[...new Set(ai)],total:Object.values(S).reduce((a,x)=>a+x.length,0)}}
+
+function strip(b,keep){const k=kind(b),P=[];
+if(k=='png'){const K=new Set('IHDR PLTE IDAT IEND tRNS acTL fcTL fdAT bKGD pHYs'.split(' '));if(keep)'iCCP gAMA cHRM sRGB sBIT'.split(' ').forEach(x=>K.add(x));P.push(b.subarray(0,8));let o=8;
+while(o<b.length-8){const l=new DataView(b.buffer,b.byteOffset+o).getUint32(0);if(K.has(td.decode(b.subarray(o+4,o+8))))P.push(b.subarray(o,o+12+l));o+=12+l}}
+else if(k=='jpeg'){P.push(b.subarray(0,2));let o=2,ori=1;while(o<b.length-4&&b[o]==255){const m=b[o+1],l=b[o+2]<<8|b[o+3];if(m==218){P.push(b.subarray(o));break}
+const d=b.subarray(o,o+2+l),icc=m==226&&td.decode(d.subarray(4,15))=='ICC_PROFILE';
+if(m==225&&td.decode(d.subarray(4,8))=='Exif'){const r=exif(b.subarray(o+10,o+2+l)).find(x=>x[0]=='Orientation');if(r)ori=r[1]}
+if(m<225||m==238||(icc&&keep))P.push(d);o+=2+l}
+if(keepO&&ori>1&&ori<9)P.splice(P[1]&&P[1][1]==224?2:1,0,new Uint8Array([255,225,0,34,69,120,105,102,0,0,77,77,0,42,0,0,0,8,0,1,1,18,0,3,0,0,0,1,0,ori,0,0,0,0,0,0]))}
+else{P.push(b.subarray(0,12));const K=new Set(['VP8 ','VP8L','VP8X','ALPH','ANIM','ANMF']);if(keep)K.add('ICCP');let o=12;
+while(o<b.length-8){const t=td.decode(b.subarray(o,o+4)),l=new DataView(b.buffer,b.byteOffset+o+4).getUint32(0,true),n=8+l+(l&1);if(K.has(t)){const c=b.slice(o,o+n);if(t=='VP8X')c[8]&=keep?0xF3:0xD3;P.push(c)}o+=n}}
+const n=P.reduce((a,x)=>a+x.length,0),out=new Uint8Array(n);let p=0;P.forEach(x=>{out.set(x,p);p+=x.length});if(k=='webp')new DataView(out.buffer).setUint32(4,n-8,true);return out}
+
+const F=[];let keep=true,keepO=true;
+$('#kp').onchange=e=>keep=e.target.checked;$('#ko').onchange=e=>keepO=e.target.checked;
+const drop=$('#drop'),inp=$('#inp');
+drop.onclick=()=>inp.click();drop.onkeydown=e=>{if(e.key=='Enter'||e.key==' '){e.preventDefault();inp.click()}};inp.onchange=()=>add(inp.files);
+['dragover','dragenter'].forEach(e=>drop.addEventListener(e,x=>{x.preventDefault();drop.classList.add('on')}));
+['dragleave','drop'].forEach(e=>drop.addEventListener(e,x=>{x.preventDefault();drop.classList.remove('on')}));
+drop.addEventListener('drop',x=>add(x.dataTransfer.files));
+async function add(fl){let m='';for(const f of [...fl]){if(F.length>=5){m='Maximum 5 images at a time. Remove one to add another.';break}
+const b=new Uint8Array(await f.arrayBuffer());if(!kind(b)){m=f.name+' is not supported. Use a JPG, PNG or WebP image.';continue}
+const url=URL.createObjectURL(f),im=new Image();im.src=url;await im.decode().catch(()=>{});
+F.push({f,b,url,dim:im.naturalWidth?im.naturalWidth+' × '+im.naturalHeight+' px':'',before:inspect(b),open:mode=='view'?1:0})}
+$('#msg').textContent=m;inp.value='';draw()}
+async function clean(i){const x=F[i];x.busy=1;draw();await new Promise(r=>setTimeout(r,800));
+x.mode='remove';x.out=strip(x.b,keep);x.after=inspect(x.out);x.durl=URL.createObjectURL(new Blob([x.out],{type:x.f.type}));x.busy=0;x.open=1;draw()}
+$('#all').onclick=async()=>{for(let i=0;i<F.length;i++)if(!F[i].out)await clean(i)};
+const tg=i=>{F[i].open^=1;draw()},rm=i=>{URL.revokeObjectURL(F[i].url);F.splice(i,1);draw()};
+
+const rows=S=>Object.keys(SN).filter(k=>S[k].length).map(k=>`<details ${k=='C2PA'?'open':''}><summary><span>${SN[k]} <span class="tag">${S[k].length}</span></span></summary>${S[k].map(([l,v])=>`<div class="r${HOT.has(l)?' hot':''}"><b>${esc(l)}</b><span>${esc(v)} <em class="rk ${RISK(l)[0].toLowerCase()}">${RISK(l)}</em></span>${H[l]?`<small>${H[l]}</small>`:''}</div>`).join('')}</details>`).join('');
+function summ(x){const a=x.before,S=a.S,none=Object.keys(SN).filter(k=>!S[k].length).map(k=>SN[k].split(' (')[0]);
+return `<div class="sum"><div class="pr"><div class="ring" style="--p:${score(a)}"><b>${score(a)}</b></div><span>privacy score</span></div><div><b>${a.total}</b><span>metadata fields</span></div><div class="${a.ai.length?'bad':''}"><b>${a.ai.length}</b><span>AI traces ${a.ai.length?'found':'not found'}</span></div><div><b>${S.C2PA.length?'Yes':'No'}</b><span>C2PA record</span></div><div><b>${Object.keys(SN).length-none.length}</b><span>sections with data</span></div></div>${none.length?`<p class="note" style="margin:0 0 6px">Not present: ${none.join(', ')}</p>`:''}`}
+const info=x=>`<details><summary>File information</summary>${[['Type',x.f.type],['Size',kb(x.f.size)],['Dimensions',x.dim],['Modified',new Date(x.f.lastModified).toLocaleString()]].map(([l,v])=>`<div class="r"><b>${l}</b><span>${esc(v)}</span></div>`).join('')}</details>`;
+function cmp(x){const a=x.before,b=x.after;return `<div class="cmp"><h4>Cleaned: before and after</h4>
+<div class="row"><span>Privacy score</span><span>${score(a)} → <b class="ok">${score(b)}</b></span></div>
+<div class="row"><span>Metadata fields</span><span>${a.total} → <b class="ok">${b.total}</b></span></div>
+<div class="row"><span>AI traces</span><span>${a.ai.length} → <b class="ok">${b.ai.length}</b></span></div>
+<div class="row"><span>File size</span><span>${kb(x.b.length)} → ${kb(x.out.length)}</span></div>
+${Object.keys(SN).filter(k=>a.S[k].length).map(k=>`<div class="row"><span>${SN[k]}</span><span>${a.S[k].length} → <b class="ok">${b.S[k].length}${b.S[k].length?'':' removed'}</b></span></div>`).join('')}
+<p class="note">A re-scan of the cleaned file found ${b.total} metadata fields. Kept: image pixels, dimensions${keep?', color profile':''}${b.S.EXIF.some(r=>r[0]=='Orientation')?', orientation':''}. Invisible pixel-level watermarks are not metadata and are not affected.</p></div>`}
+function draw(){$('#list').innerHTML=F.map((x,i)=>{const v=x.out&&x.mode=='edit'?{...x,before:x.after}:x;return`<div class="f${x.busy?' busy':''}"><div class="fh"><div class="th"><img src="${x.url}" alt=""></div><div class="fi"><b>${esc(x.f.name)}</b><small>${kb(x.f.size)} · ${x.before.k.toUpperCase()}${x.dim?' · '+x.dim:''}</small><span class="tag ${x.out?'g':x.before.ai.length?'a':''}">${x.out?(x.mode=='edit'?'Edited':'Cleaned'):x.before.ai.length?'AI traces found':'Scanned'}</span></div>
+<button class="btn o" onclick="tg(${i})">${x.open?'Hide':'View'} metadata</button>
+${mode=='view'?'':ok(x)?`<a class="btn" download="${x.mode=='edit'?'edited':'clean'}-${esc(x.f.name)}" href="${x.durl}">Download ${x.mode=='edit'?'edited':'clean'}</a>`:mode=='edit'?'':`<button class="btn" onclick="clean(${i})" ${x.busy?'disabled':''}>${x.busy?'Scrubbing…':'Remove metadata'}</button>`}
+<button class="btn o" onclick="rm(${i})" aria-label="Remove file">✕</button></div>
+<div class="pn${x.open?' open':''}">${x.out&&x.mode!='edit'?cmp(x):''}${summ(v)}${rows(v.before.S)}${info(x)}</div></div>`}).join('');
+$('#all').disabled=!F.some(x=>!x.out);$('#zip').hidden=!F.some(x=>x.out)}
+
+const CT=(()=>{const t=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})(),
+crc=b=>{let x=-1;for(let i=0;i<b.length;i++)x=CT[(x^b[i])&255]^(x>>>8);return(x^-1)>>>0},
+RISK=l=>HOT.has(l)?'High':/^(Camera|Lens|Date|Modified|Software|Description|Copyright|Generator|Action|Source type|Signature)/.test(l)?'Med':'Low',
+score=a=>Math.max(0,100-Object.values(a.S).flat().reduce((s,[l])=>s+{High:18,Med:6,Low:2}[RISK(l)],0)-(a.ai.length?10:0));
+function zip(files){const P=[],C=[],E=new TextEncoder();let off=0;
+for(const[name,d]of files){const n=E.encode(name),c=crc(d),h=new DataView(new ArrayBuffer(30)),g=new DataView(new ArrayBuffer(46));
+h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint32(14,c,true);h.setUint32(18,d.length,true);h.setUint32(22,d.length,true);h.setUint16(26,n.length,true);
+g.setUint32(0,0x02014b50,true);g.setUint16(4,20,true);g.setUint16(6,20,true);g.setUint32(16,c,true);g.setUint32(20,d.length,true);g.setUint32(24,d.length,true);g.setUint16(28,n.length,true);g.setUint32(42,off,true);
+P.push(new Uint8Array(h.buffer),n,d);C.push(new Uint8Array(g.buffer),n);off+=30+n.length+d.length}
+const cs=C.reduce((a,x)=>a+x.length,0),e=new DataView(new ArrayBuffer(22));e.setUint32(0,0x06054b50,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,cs,true);e.setUint32(16,off,true);
+return new Blob([...P,...C,new Uint8Array(e.buffer)],{type:'application/zip'})}
+$('#zip').onclick=()=>{const used={},f=F.filter(x=>x.out).map(x=>{let n=(x.mode=='edit'?'edited-':'clean-')+x.f.name;if(used[n])n=(used[n]++)+'-'+n;else used[n]=1;return[n,x.out]}),a=document.createElement('a');a.href=URL.createObjectURL(zip(f));a.download='aimetascrub-clean.zip';a.click()};
+function sampleBytes(png){const en=s=>[...s].map(c=>c.charCodeAt(0)),cs=s=>s.length<24?[96+s.length,...en(s)]:[120,s.length,...en(s)],
+ck=(t,d)=>{const o=new Uint8Array(12+d.length),v=new DataView(o.buffer);v.setUint32(0,d.length);o.set(en(t),4);o.set(d,8);v.setUint32(8+d.length,crc(o.subarray(4,8+d.length)));return o},
+tx=(k,s)=>ck('tEXt',new Uint8Array([...en(k),0,...en(s)])),
+tf=new Uint8Array(168),v=new DataView(tf.buffer),E=(o,g,t,c,x)=>{v.setUint16(o,g,true);v.setUint16(o+2,t,true);v.setUint32(o+4,c,true);v.setUint32(o+8,x,true)},R=(o,a)=>a.forEach((x,i)=>{v.setUint32(o+8*i,x[0],true);v.setUint32(o+8*i+4,x[1],true)});
+tf.set([73,73,42,0,8,0,0,0]);v.setUint16(8,3,true);E(10,271,2,8,50);E(22,272,2,8,58);E(34,0x8825,4,1,66);tf.set(en('AcmeCam'),50);tf.set(en('Z9 Pro'),58);
+v.setUint16(66,4,true);E(68,1,2,2,0);tf[76]=78;E(80,2,5,3,120);E(92,3,2,2,0);tf[100]=69;E(104,4,5,3,144);R(120,[[48,1],[51,1],[0,1]]);R(144,[[2,1],[21,1],[0,1]]);
+const cb=new Uint8Array([...cs('claim_generator_info'),...cs('name'),...cs('Example AI Studio'),...cs('action'),...cs('c2pa.created'),...cs('digitalSourceType'),...cs('http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia')]),
+x=[ck('eXIf',tf),tx('Software','Example AI Studio 2.1'),tx('parameters','a cozy cabin at sunset, ultra detailed, seed 482913'),ck('caBX',cb)],
+at=33,n=x.reduce((a,c)=>a+c.length,0),o=new Uint8Array(png.length+n);o.set(png.subarray(0,at));let p=at;x.forEach(c=>{o.set(c,p);p+=c.length});o.set(png.subarray(at),p);return o}
+$('#smp').onclick=async()=>{if(F.length>=5){$('#msg').textContent='Maximum 5 images at a time. Remove one first.';return}
+const c=document.createElement('canvas'),g=c.getContext('2d'),im=new Image();c.width=660;c.height=504;
+im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(document.querySelector('.xi svg').outerHTML.replace('<svg','<svg xmlns="http://www.w3.org/2000/svg" width="660" height="504"'));await im.decode();g.drawImage(im,0,0,660,504);
+const bl=await new Promise(r=>c.toBlob(r,'image/png')),by=sampleBytes(new Uint8Array(await bl.arrayBuffer()));
+await add([new File([by],'sample-ai-image.png',{type:'image/png'})]);const x=F[F.length-1];if(x){x.open=1;draw()}};
+
+let mode='remove';
+const ok=x=>x.out&&(mode=='edit'?x.mode=='edit':x.mode!='edit'),msg=t=>$('#msg').textContent=t,
+en8=s=>[...new TextEncoder().encode(s)],cat=(...a)=>{const o=new Uint8Array(a.reduce((n,x)=>n+x.length,0));let p=0;a.forEach(x=>{o.set(x,p);p+=x.length});return o},
+chunk=(t,d)=>{const o=new Uint8Array(12+d.length),v=new DataView(o.buffer);v.setUint32(0,d.length);o.set([...t].map(c=>c.charCodeAt(0)),4);o.set(d,8);v.setUint32(8+d.length,crc(o.subarray(4,8+d.length)));return o};
+function tiff(f,g){const o=[73,73,42,0,8,0,0,0],u16=v=>[v&255,v>>8&255],u32=v=>[v&255,v>>8&255,v>>16&255,v>>24&255],A=s=>[...en8(s),0];
+const E=f.map(([t,s])=>typeof s=='number'?[t,3,1,u16(s).concat([0,0])]:(b=>[t,2,b.length,b])(A(s))).sort((a,b)=>a[0]-b[0]),n=E.length+(g?1:0),dp=10+12*n+4,ifd=[...u16(n)],data=[];
+E.forEach(([t,ty,c,b])=>{ifd.push(...u16(t),...u16(ty),...u32(c));if(b.length<=4)ifd.push(...b,...Array(4-b.length).fill(0));else{ifd.push(...u32(dp+data.length));data.push(...b)}});
+if(data.length&1)data.push(0);const go=dp+data.length;if(g)ifd.push(...u16(0x8825),...u16(4),...u32(1),...u32(go));
+ifd.push(0,0,0,0);o.push(...ifd,...data);
+if(g){const R=v=>{v=Math.abs(v);const d=Math.floor(v),m=Math.floor((v-d)*60),s=Math.round(((v-d)*60-m)*6000);return[d,1,m,1,s,100].flatMap(u32)},base=o.length+54;
+o.push(...u16(4),1,0,2,0,2,0,0,0,g[0]<0?83:78,0,0,0,2,0,5,0,3,0,0,0,...u32(base),3,0,2,0,2,0,0,0,g[1]<0?87:69,0,0,0,4,0,5,0,3,0,0,0,...u32(base+24),0,0,0,0,...R(g[0]),...R(g[1]))}
+return new Uint8Array(o)}
+function edit(b,d,g){const k=kind(b);if(k=='webp')return null;const k0=keepO;keepO=false;const s=strip(b,true);keepO=k0;
+if(k=='png'){const x=[];[['Description',d.desc],['Author',d.auth],['Copyright',d.copy]].forEach(([n,t])=>t&&x.push(chunk('iTXt',new Uint8Array([...en8(n),0,0,0,0,0,...en8(t)]))));if(g)x.push(chunk('eXIf',tiff([],g)));return cat(s.subarray(0,33),...x,s.subarray(33))}
+const f=[[0x10E,d.desc],[0x13B,d.auth],[0x8298,d.copy]].filter(x=>x[1]),o=inspect(b).S.EXIF.find(r=>r[0]=='Orientation');if(o&&+o[1]>1&&+o[1]<9)f.push([0x112,+o[1]]);
+if(!f.length&&!g)return s;const t=tiff(f,g),a=new Uint8Array([255,225,(t.length+8)>>8,(t.length+8)&255,69,120,105,102,0,0]);let p=2;if(s[2]==255&&s[3]==224)p=4+(s[4]<<8|s[5]);
+return cat(s.subarray(0,p),a,t,s.subarray(p))}
+$('#apply').onclick=()=>{if(!F.length){msg('Add at least one image first.');return}
+const v=i=>$('#e-'+i).value.trim(),la=parseFloat(v('lat')),lo=parseFloat(v('lon')),g=!isNaN(la)&&!isNaN(lo)?[la,lo]:null,d={desc:v('desc'),auth:v('auth'),copy:v('copy')};
+if(g&&(Math.abs(la)>90||Math.abs(lo)>180)){msg('Latitude must be between -90 and 90, and longitude between -180 and 180.');return}
+if(!d.desc&&!d.auth&&!d.copy&&!g){msg('Enter at least one field to write.');return}
+let sk=0;F.forEach(x=>{const o=edit(x.b,d,g);if(!o){sk++;return}x.out=o;x.after=inspect(o);x.durl=URL.createObjectURL(new Blob([o],{type:x.f.type}));x.mode='edit';x.open=1});
+msg(sk?sk+' WebP file(s) skipped. Editing supports JPG and PNG.':'');draw()};
+const TX={remove:['AI Metadata Remover &amp; Viewer','See exactly what hidden data your images carry: C2PA credentials, EXIF, XMP, IPTC and AI prompts. Then remove it in one click.','AIMetaScrub: AI Metadata Remover & Viewer (Free, No Upload)'],
+view:['View Image Metadata','Check what any image reveals: C2PA, EXIF, XMP, IPTC and AI prompts. Nothing is changed and nothing is uploaded.','AIMetaScrub: View Image Metadata Online (Free, No Upload)'],
+edit:['Edit Image Metadata','Add a description, author, copyright and location to JPG and PNG images, right in your browser.','AIMetaScrub: Edit Image Metadata Online (Free, No Upload)']};
+function setMode(m){mode=m;document.body.className='m-'+m;$('#h1').innerHTML=TX[m][0];$('#hp').textContent=TX[m][1];document.title=TX[m][2];
+document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.m==m));$('#edf').hidden=m!='edit';if(m=='view')F.forEach(x=>x.open=1);history.replaceState(null,'','#'+m);msg('');draw()}
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>setMode(b.dataset.m));
+{const hs=location.hash.slice(1);if(TX[hs])setMode(hs)}
+</script></body></html>
