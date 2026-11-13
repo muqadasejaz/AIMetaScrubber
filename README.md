@@ -2,9 +2,8 @@
 
 A free, privacy-first web app that shows exactly what hidden data your images carry (**C2PA content credentials, EXIF, XMP, IPTC and AI prompts**) and removes it in one click. Everything runs **in your browser**: nothing is uploaded, and no account is needed.
 
-<!-- Add a screenshot: drag an image into the GitHub editor, then paste the link below.
-<img width="1408" alt="AIMetaScrubber" src="PASTE_IMAGE_LINK_HERE" />
--->
+<img width="2560" height="1280" alt="image" src="https://github.com/user-attachments/assets/b7e3b3a9-1503-4f17-861c-bb47d0e2ffb0" />
+
 
 ---
 
@@ -49,6 +48,9 @@ Each tool has its own link: `#remove`, `#view` and `#edit` (for example `.../#vi
 ---
 
 ##  How It Works
+
+<img width="2560" height="880" alt="image" src="https://github.com/user-attachments/assets/f76c4f9e-3fec-4d17-a92d-9206241ea19d" />
+
 
 1. **Upload** your image (it stays on your device)
 2. **Inspect** every field, grouped by type, with risk levels
