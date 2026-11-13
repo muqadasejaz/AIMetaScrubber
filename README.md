@@ -1,9 +1,9 @@
-# 🧼 AIMetaScrub: AI Metadata Remover & Viewer
+# 🧼 AIMetaScrubber: AI Metadata Remover & Viewer
 
 A free, privacy-first web app that shows exactly what hidden data your images carry (**C2PA content credentials, EXIF, XMP, IPTC and AI prompts**) and removes it in one click. Everything runs **in your browser**: nothing is uploaded, and no account is needed.
 
 <!-- Add a screenshot: drag an image into the GitHub editor, then paste the link below.
-<img width="1408" alt="AIMetaScrub" src="PASTE_IMAGE_LINK_HERE" />
+<img width="1408" alt="AIMetaScrubber" src="PASTE_IMAGE_LINK_HERE" />
 -->
 
 ---
@@ -12,7 +12,7 @@ A free, privacy-first web app that shows exactly what hidden data your images ca
 
 Image files often carry more than pixels. Cameras write GPS coordinates and serial numbers, editors write software and edit history, and AI tools can embed prompts, generator names and signed C2PA records.
 
-AIMetaScrub reads that hidden data, explains every field in plain language, rates how revealing it is, and cuts it out of the file **without re-encoding the image**, so the picture stays exactly the same.
+AIMetaScrubber reads that hidden data, explains every field in plain language, rates how revealing it is, and cuts it out of the file **without re-encoding the image**, so the picture stays exactly the same.
 
 It has three tools in one page:
 
@@ -26,7 +26,7 @@ It has three tools in one page:
 
 ##  Live Demo
 
-Try the live app  [AIMetaScrub on Vercel](https://ai-meta-scrubb.vercel.app/)
+Try the live app  [AIMetaScrubber on Vercel](https://ai-meta-scrubber.vercel.app/)
 
 Each tool has its own link: `#remove`, `#view` and `#edit` (for example `.../#view`).
 
